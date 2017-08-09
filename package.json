@@ -1,8 +1,7 @@
 {
-  "name": "Book Trading Club",
+  "name": "book-trading-club",
   "version": "1.0.0",
   "description": "FreeCodeCamp Dynamic Web App Project - Manage a Book Trading Club",
-  "main": "index.js",
   "engines": {
     "node": "7.8.0"
   },
