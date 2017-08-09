@@ -1,25 +1,28 @@
 import React, { PropTypes } from 'react';
 import AppBar from 'material-ui/AppBar'
-import { DropdownMenu, FlatMenu } from './Menu'
+import Menu from './Menu'
+import Auth from '../modules/Auth';
 
 
-const Layout = ({ children }) => (
-  <div>
-    <AppBar
-      title='Bookaholics Anonymous'
-      iconElementRight={
-        document.documentElement.clientWidth > 700 ?
-        <FlatMenu /> :
-        <DropdownMenu />
-      }
-      showMenuIconButton={false}
-      id='app-bar'
-    />
+class Layout extends React.Component {
 
-    {children}
+  render() {
+    return (
+      <div>
+        <AppBar
+          title='Bookaholics Anonymous'
+          iconElementRight={<Menu auth={Auth.isUserAuthenticated()}/>}
+          showMenuIconButton={false}
+          id='app-bar'
+        />
 
-  </div>
-);
+        {this.props.children}
+
+      </div>
+    )
+  }
+  
+}
 
 Layout.propTypes = {
   children: PropTypes.object.isRequired

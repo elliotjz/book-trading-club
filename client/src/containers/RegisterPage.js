@@ -42,8 +42,6 @@ class RegisterPage extends React.Component {
     xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
     xhr.responseType = 'json';
     xhr.addEventListener('load', () => {
-      console.log('xhr.status')
-      console.log(xhr.status)
       if (xhr.status === 200) {
         // success
 

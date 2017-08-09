@@ -5,47 +5,63 @@ import IconButton from 'material-ui/IconButton'
 import MenuIcon from 'material-ui/svg-icons/navigation/menu'
 import FlatButton from 'material-ui/FlatButton'
 import { Link } from 'react-router'
-import Auth from '../modules/Auth';
 
-function getMenuItems() {
-	return Auth.isUserAuthenticated() ?
-			{
-				menuItems: [
-					{url: '/', text: 'Dashboard'},
-					{url: '/logout', text: 'Logout'}
-					
-				]
-			} :
-			{
-				menuItems: [
-					{url: '/', text: 'Home'},
-					{url: '/login', text: 'Login'},
-					{url: '/register', text: 'Register'},
-				]
-			}
-}
-
-export class DropdownMenu extends React.Component {
+class Menu extends React.Component {
 
 	constructor(props) {
 		super(props);
 		this.state = {
-			menuItems: []
+			wideScreen: false
 		}
 	}
 
-	componentWillMount(nextProps, nextState) {
-		this.setState(getMenuItems());
+	isWideScreen() {
+    return document.documentElement.clientWidth > 700
+  }
+
+  getMenuItems() {
+		return this.props.auth ?
+			[
+				{url: '/', text: 'Dashboard'},
+				{url: '/logout', text: 'Logout'}
+			] :
+			[
+				{url: '/', text: 'Home'},
+				{url: '/login', text: 'Login'},
+				{url: '/register', text: 'Register'},
+			]
 	}
 
+  componentDidMount() {
+  	this.setState({
+			wideScreen: this.isWideScreen()
+		});
+    window.addEventListener("resize", () => {
+    	this.setState({ wideScreen: this.isWideScreen() })
+    })
+  }
+
 	render() {
-		return (
+		let menuItems = this.getMenuItems()
+		return this.state.wideScreen ?
+		(
+			<div id='flat-menu-container'>
+				{menuItems.map( (item, index) => {
+					return (
+						<Link to={item.url} key={index}>
+							<FlatButton label={item.text} />
+						</Link>
+					)
+				})}
+			</div>
+		) :
+		(
 			<IconMenu
 				iconButtonElement={<IconButton><MenuIcon /></IconButton>}
 				anchorOrigin={{horizontal: 'right', vertical: 'top'}}
 				targetOrigin={{horizontal: 'right', vertical: 'top'}}
 			>
-				{this.state.menuItems.map( (item, index) => {
+				{menuItems.map( (item, index) => {
 					return (
 						<Link to={item.url} key={index} >
 							<MenuItem
@@ -59,32 +75,4 @@ export class DropdownMenu extends React.Component {
 	}
 }
 
-export class FlatMenu extends React.Component {
-
-	constructor(props) {
-		super(props);
-		this.state = {
-			menuItems: []
-		}
-	}
-
-	componentWillMount(nextProps, nextState) {
-		this.setState(getMenuItems());
-	}
-
-	render() {
-		return (
-			<div id='flat-menu-container'>
-				{this.state.menuItems.map( (item, index) => {
-					return (
-						<Link to={item.url} key={index}>
-							<FlatButton label={item.text} />
-						</Link>
-					)
-				})}
-			</div>
-		)
-	}
-}
-
-
+export default Menu

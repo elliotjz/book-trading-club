@@ -3,8 +3,11 @@
   "version": "1.0.0",
   "description": "How to use create-react-app with a custom Node API on Heroku",
   "main": "index.js",
+  "engines": {
+    "node": "6.11.1"
+  },
   "scripts": {
-    "start": "nodemon --use-strict index.js",
+    "start": "node index.js",
     "bundle": "webpack",
     "heroku-postbuild": "cd react-ui/ && npm install && npm install --only=dev --no-shrinkwrap && npm run build"
   },
