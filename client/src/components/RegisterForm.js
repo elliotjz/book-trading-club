@@ -1,8 +1,9 @@
-import React, { PropTypes } from 'react';
-import { Link } from 'react-router';
-import { Card, CardText } from 'material-ui/Card';
-import RaisedButton from 'material-ui/RaisedButton';
-import TextField from 'material-ui/TextField';
+import React from 'react'
+import PropTypes from 'prop-types'
+import { Link } from 'react-router-dom'
+import { Card, CardText } from 'material-ui/Card'
+import RaisedButton from 'material-ui/RaisedButton'
+import TextField from 'material-ui/TextField'
 
 
 const RegisterForm = ({
@@ -55,16 +56,16 @@ const RegisterForm = ({
       <CardText>Already have an account? <Link to={'/login'}>Log in</Link></CardText>
     </form>
   </Card>
-);
+)
 
-RegisterForm.propTypes = {
+RegisterForm.PropTypes = {
   onSubmit: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
   errors: PropTypes.object.isRequired,
   user: PropTypes.object.isRequired
-};
+}
 
-export default RegisterForm;
+export default RegisterForm
 
 
 

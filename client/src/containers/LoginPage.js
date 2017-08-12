@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react'
+import { Redirect } from 'react-router-dom'
 import Auth from '../modules/Auth';
 import LoginForm from '../components/LoginForm'
 
@@ -22,7 +23,8 @@ class LoginPage extends React.Component {
       user: {
         email: '',
         password: ''
-      }
+      },
+      successfulLogin: false
     };
 
     this.processForm = this.processForm.bind(this);
@@ -45,7 +47,6 @@ class LoginPage extends React.Component {
     xhr.responseType = 'json';
     xhr.addEventListener('load', () => {
       if (xhr.status === 200) {
-        // success
 
         // change the component-container state
         this.setState({
@@ -57,7 +58,10 @@ class LoginPage extends React.Component {
 
 
         // change the current URL to /
-        this.context.router.replace('/');
+        this.setState({
+          successfulLogin: true
+        })
+        
       } else {
         // failure
 
@@ -84,7 +88,12 @@ class LoginPage extends React.Component {
   }
 
   render() {
-    return (
+    return this.state.successfulLogin ?
+    (
+      <Redirect to="/" push />
+    ) :
+    (
+
       <LoginForm
         onSubmit={this.processForm}
         onChange={this.changeUser}
@@ -96,10 +105,6 @@ class LoginPage extends React.Component {
   }
 
 }
-
-LoginPage.contextTypes = {
-  router: PropTypes.object.isRequired
-};
 
 export default LoginPage;
 

@@ -1,5 +1,6 @@
-import React, { PropTypes } from 'react';
-import { Link } from 'react-router';
+import React from 'react'
+import PropTypes from 'prop-types'
+import { Link } from 'react-router-dom';
 import { Card, CardText } from 'material-ui/Card';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
@@ -49,7 +50,7 @@ const LoginForm = ({
   </Card>
 );
 
-LoginForm.propTypes = {
+LoginForm.PropTypes = {
   onSubmit: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
   errors: PropTypes.object.isRequired,
@@ -58,3 +59,5 @@ LoginForm.propTypes = {
 };
 
 export default LoginForm;
+
+

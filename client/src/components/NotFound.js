@@ -1,4 +1,4 @@
-// src/components/NotFound/index.js
+
 import React from 'react'
 
 

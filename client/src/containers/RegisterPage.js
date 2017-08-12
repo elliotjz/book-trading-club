@@ -1,6 +1,6 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
 import RegisterForm from '../components/RegisterForm'
-
+import { Redirect } from 'react-router-dom'
 
 class RegisterPage extends React.Component {
 
@@ -14,7 +14,8 @@ class RegisterPage extends React.Component {
         email: '',
         name: '',
         password: ''
-      }
+      },
+      successfulRegistration: false
     };
 
     this.processForm = this.processForm.bind(this);
@@ -43,7 +44,6 @@ class RegisterPage extends React.Component {
     xhr.responseType = 'json';
     xhr.addEventListener('load', () => {
       if (xhr.status === 200) {
-        // success
 
         // change the component-container state
         this.setState({
@@ -54,9 +54,10 @@ class RegisterPage extends React.Component {
         localStorage.setItem('successMessage', xhr.response.message);
 
         // make a redirect
-        this.context.router.replace('/login');
+        this.setState({
+          successfulRegistration: true
+        })
       } else {
-        // failure
 
         const errors = xhr.response.errors ? xhr.response.errors : {};
         errors.summary = xhr.response.message;
@@ -69,11 +70,6 @@ class RegisterPage extends React.Component {
     xhr.send(formData);
   }
 
-  /**
-   * Change the user object.
-   *
-   * @param {object} event - the JavaScript event object
-   */
   changeUser(event) {
     const field = event.target.name;
     const user = this.state.user;
@@ -84,11 +80,12 @@ class RegisterPage extends React.Component {
     });
   }
 
-  /**
-   * Render the component.
-   */
   render() {
-    return (
+    return this.state.successfulRegistration ?
+    (
+      <Redirect to='/login' push />
+    ) :
+    (
       <RegisterForm
         onSubmit={this.processForm}
         onChange={this.changeUser}
@@ -99,10 +96,6 @@ class RegisterPage extends React.Component {
   }
 
 }
-
-RegisterPage.contextTypes = {
-  router: PropTypes.object.isRequired
-};
 
 export default RegisterPage;
 

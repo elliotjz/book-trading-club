@@ -4,7 +4,7 @@ import MenuItem from 'material-ui/MenuItem'
 import IconButton from 'material-ui/IconButton'
 import MenuIcon from 'material-ui/svg-icons/navigation/menu'
 import FlatButton from 'material-ui/FlatButton'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 
 class Menu extends React.Component {
 
