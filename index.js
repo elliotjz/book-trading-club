@@ -1,15 +1,17 @@
+'use strict'
+
 const express = require('express')
 const bodyParser = require('body-parser')
 const passport = require('passport')
 const path = require('path')
 
+const app = express()
+
 //Connect to DB
 require('./server/models').connect(process.env.MLAB_URL);
 
-const app = express()
-
 // Priority serve any static files.
-app.use(express.static(path.resolve(__dirname, '/react-ui/build')))
+app.use(express.static(path.resolve(__dirname, '/client/build')))
 
 app.use(bodyParser.urlencoded({ extended: false }));
 
