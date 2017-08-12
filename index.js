@@ -34,6 +34,10 @@ const apiRoutes = require('./server/routes/api');
 app.use('/auth', authRoutes);
 app.use('/api', apiRoutes);
 
+app.get('*', function(request, response) {
+  response.sendFile(path.resolve(__dirname, '../client/build', 'index.html'));
+});
+
 //Listen to port
 const PORT = process.env.PORT || 5000
 app.listen(PORT, function () {
