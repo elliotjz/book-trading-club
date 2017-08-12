@@ -2,10 +2,9 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const passport = require('passport')
 const path = require('path')
-const config = require('./config');
 
 //Connect to DB
-require('./server/models').connect(config.dbUri);
+require('./server/models').connect(process.env.MLAB_URL);
 
 const app = express()
 
