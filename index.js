@@ -11,7 +11,7 @@ const app = express()
 require('./server/models').connect(process.env.MLAB_URL);
 
 // Priority serve any static files.
-app.use(express.static(path.resolve(__dirname, '/client/build')))
+app.use(express.static(path.resolve(__dirname, 'client/build')))
 
 app.use(bodyParser.urlencoded({ extended: false }));
 
@@ -35,7 +35,7 @@ app.use('/auth', authRoutes);
 app.use('/api', apiRoutes);
 
 app.get('*', function(request, response) {
-  response.sendFile(path.resolve(__dirname, '../client/build', 'index.html'));
+  response.sendFile(path.resolve(__dirname, './client/build', 'index.html'));
 });
 
 //Listen to port
