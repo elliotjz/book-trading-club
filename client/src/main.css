@@ -12,3 +12,29 @@ body {
 #flat-menu-container {
 	margin: 7px 0;
 }
+
+.dash-btn {
+	margin: 12px;
+}
+
+#results-gallery {
+	display: flex;
+	justify-content: center;
+	flex-flow: row wrap;
+	max-width: 1000px;
+	margin: auto;
+}
+
+.result {
+ 	width: 180px;
+ 	margin: 10px;
+ 	border: 1px #eee solid;
+ 	text-align: left;
+ 	padding: 20px;
+}
+
+.result img {
+	margin: 10px 26px;
+	box-shadow: 0 0 10px #555;
+}
+

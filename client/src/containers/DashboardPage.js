@@ -1,19 +1,17 @@
-import React from 'react';
-import Auth from '../modules/Auth';
-import Dashboard from '../components/Dashboard';
-
+import React from 'react'
+import Dashboard from '../components/Dashboard'
+import Auth from '../modules/Auth'
 
 class DashboardPage extends React.Component {
 
-  constructor(props) {
-    super(props);
+	constructor(props) {
+		super(props);
+		this.state = {
+			user: {}
+		}
+	}
 
-    this.state = {
-      secretData: ''
-    };
-  }
-
-  componentDidMount() {
+	componentDidMount() {
     const xhr = new XMLHttpRequest();
     xhr.open('get', '/api/dashboard');
     xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
@@ -23,17 +21,18 @@ class DashboardPage extends React.Component {
     xhr.addEventListener('load', () => {
       if (xhr.status === 200) {
         this.setState({
-          secretData: xhr.response.message
+          user: xhr.response.user
         });
       }
     });
     xhr.send();
   }
-
-  render() {
-    return (<Dashboard secretData={this.state.secretData} />);
-  }
-
+  
+	render() {
+		return (
+			<Dashboard user={this.state.user} />
+		)
+	}
 }
 
-export default DashboardPage;
+export default DashboardPage

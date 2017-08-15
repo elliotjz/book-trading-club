@@ -23,6 +23,8 @@ class Menu extends React.Component {
 		return this.props.auth ?
 			[
 				{url: '/', text: 'Dashboard'},
+				{url: '/allbooks', text: 'All Books'},
+				{url: '/mybooks', text: 'My Books'},
 				{url: '/logout', text: 'Logout'}
 			] :
 			[
