@@ -12,6 +12,13 @@ class DashboardPage extends React.Component {
 	}
 
 	componentDidMount() {
+    let user = JSON.parse(localStorage.getItem('user'))
+    if (user !== null) {
+      this.setState({
+        user
+      })
+    }
+    /*
     const xhr = new XMLHttpRequest();
     xhr.open('get', '/api/dashboard');
     xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
@@ -25,7 +32,7 @@ class DashboardPage extends React.Component {
         });
       }
     });
-    xhr.send();
+    xhr.send();*/
   }
   
 	render() {

@@ -12,14 +12,15 @@ class MyBooksPage extends React.Component {
 		this.state = {
 			query: '',
 			message: '',
-			results: []
+			searchResults: [],
+      userBooks: []
 		}
 
-		this.lookupBook = this.lookupBook.bind(this)
+		this.bookSearch = this.bookSearch.bind(this)
 		this.queryChange = this.queryChange.bind(this)
 	}
 
-	lookupBook(event) {
+	bookSearch(event) {
     event.preventDefault()
 
     // Get query from form
@@ -30,16 +31,22 @@ class MyBooksPage extends React.Component {
     	url: 'https://www.googleapis.com/books/v1/volumes?q=' + query,
     	type: 'GET',
     	success: (data) => {
-    		let results = []
-    		for (let i = 0; i < 8; i++) {
-    			const title = data.items[i].volumeInfo.title
-    			const author = data.items[i].volumeInfo.authors[0]
-    			const thumbnail = data.items[i].volumeInfo.imageLinks.thumbnail
-    			results.push({ title, author, thumbnail })
+    		let searchResults = []
+    		let title
+    		let author
+    		let thumbnail
+    		for (let i = 0; i < 20; i++) {
+    			if (data.items[i] && data.items[i].volumeInfo && data.items[i].volumeInfo.authors) {
+    				title = data.items[i].volumeInfo.title
+	    			author = data.items[i].volumeInfo.authors[0]
+	    			thumbnail = data.items[i].volumeInfo.imageLinks ? data.items[i].volumeInfo.imageLinks.thumbnail : null
+	    			searchResults.push({ title, author, thumbnail })
+    			}
+    			
     		}
     		
     		this.setState({
-    			results
+    			searchResults
     		})
     	},
     	error: (xhr,status,error) => {
@@ -63,10 +70,11 @@ class MyBooksPage extends React.Component {
   	return Auth.isUserAuthenticated() ?
     (
       <MyBooks
-      	lookupBook={this.lookupBook}
+      	bookSearch={this.bookSearch}
       	queryChange={this.queryChange}
       	query={this.state.query}
-      	results={this.state.results}
+      	searchResults={this.state.searchResults}
+        userBooks={this.state.userBooks}
       />
     ) :
     (

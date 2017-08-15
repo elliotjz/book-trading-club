@@ -1,20 +1,31 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Card, CardTitle } from 'material-ui/Card';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
+import BookGallery from './BookGallery'
+import Divider from 'material-ui/Divider';
+
 
 const MyBooks = ({
-	lookupBook,
+	bookSearch,
 	queryChange,
 	query,
-	results
+	searchResults,
+  userBooks
 	}) => (
-	<Card>
-		<CardTitle
-      title="My Books"
-    />
-  	<form onSubmit={lookupBook}>
+	<div id='page'>
+		<h2>My Books</h2>
+    {userBooks.length > 0 ?
+      <BookGallery books={[]} /> :
+      <div>
+        <p>You don't currently have any books. Seach for a book below to add one.</p>
+      </div>
+    }
+    
+    <div className='divider'>
+      <Divider />
+  	</div>
+    <form onSubmit={bookSearch}>
   		<div className="field-line">
         <TextField
           floatingLabelText="Book"
@@ -25,32 +36,17 @@ const MyBooks = ({
         />
         <RaisedButton type="submit" label="Search" primary />
       </div>
-    	<div id='results-gallery'>
-    	{results.length !== 0 ?
-    		results.map( (item, index) => {
-    			return (
-    				<div className='result' key={index}>
-			      	<h3>{item.title}</h3>
-			      	<p>{item.author}</p>
-			      	<img src={item.thumbnail} alt='thumbnail' />
-			      </div>
-    			) 
-    		}) :
-		    (
-		    	null
-		    )
-	  	}
-	    </div>
-
-  	</form>
-	</Card>
+    </form>
+  	<BookGallery books={searchResults}/>
+	</div>
 )
 
 MyBooks.PropTypes = {
-	lookupBook: PropTypes.func.isRequired,
+	bookSearch: PropTypes.func.isRequired,
 	queryChange: PropTypes.func.isRequired,
 	query: PropTypes.string.isRequired,
-	results: PropTypes.object.isRequired
+	searchResults: PropTypes.object.isRequired,
+  userBooks: PropTypes.object.isRequired
 }
 
 export default MyBooks
