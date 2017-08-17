@@ -10,14 +10,9 @@ router.get('/allbooks', (req, res) => {
 })
 
 router.post('/addbook', (req, res) => {
-  console.log('server is adding book')
-  console.log('searching for email:')
-  console.log(req.headers.email)
   User.findOne({ email: req.headers.email }, (err, data) => {
   	if (err) throw err
   	if (data) {
-      console.log('adding book:')
-      console.log(req.headers.book)
   		data.books.push(JSON.parse(req.headers.book))
   		// add book to user's database
   		User.update({ email: req.headers.email }, {
@@ -37,10 +32,54 @@ router.post('/addbook', (req, res) => {
   		res.status(200).json({
   			error: 'User not found'
   		})
-  	}
-  	
+  	} 	
   })
-  
 })
 
+router.post('/removebook', (req, res) => {
+  User.findOne({ email: req.headers.email }, (err, data) => {
+    if (err) throw err
+    if (data) {
+      const indexOfBook = findIndexOfBook(JSON.parse(req.headers.book), data.books)
+      if (indexOfBook >= 0) {
+        data.books.splice(indexOfBook, 1)
+
+        // add book to user's database
+        User.update({ email: req.headers.email }, {
+          $set: { books: data.books }
+        }, (err, data) => {
+          if (err) throw err
+        })
+      } else {
+        console.log('error: Book wasn\'t found')
+      }
+      res.status(200).json({
+        userData: {
+          name: data.name,
+          email: data.email,
+          books: data.books
+        }
+      })
+    } else {
+      res.status(200).json({
+        error: 'User not found'
+      })
+    }   
+  })
+})
+
+// Finds the index of a book in an array
+function findIndexOfBook(book, array) {
+  book = JSON.stringify(book)
+  for (let i = 0; i < array.length; i++) {
+    if (book === JSON.stringify(array[i])) {
+      return i
+    }
+  }
+  return -1
+}
+
 module.exports = router
+
+
+

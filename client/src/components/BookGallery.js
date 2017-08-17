@@ -5,29 +5,42 @@ import RaisedButton from 'material-ui/RaisedButton';
 const BookGallery = ({
 	books,
 	actionName,
-	onAction
+	onAction,
+	secondaryBtn
 }) => (
-	<div id='book-gallery'>
+	<div className='book-gallery'>
 		{books.length !== 0 ?
 			books.map( (item, index) => {
 				return (
 					<div className='result' key={index}>
-
-		      	<h3>{item.title}</h3>
-		      	<p>{item.author}</p>
+						<div className='book-info'>
+							<div className='two-line-ellipsis'>
+			      		<p><b>{item.title}</b></p>
+			      	</div>
+							<div className='two-line-ellipsis'>
+			      		<p>{item.author}</p>
+			      	</div>
+			      </div>
 		      	{item.thumbnail ?
 		      		<img src={item.thumbnail} alt='thumbnail' /> :
 		      		<div className='image-placeholder'>
 		      			<p>Image not found</p>
 		      		</div>
 		      	}
-		      	<div className='add-book-btn'>
+		      	<div className='gallery-action-btn'>
 			      	<form onSubmit={onAction} id={index}>
-			      		<RaisedButton
-			      			label={actionName}
-		      				type='submit'
-		      				primary
-		      			/>
+			      		{secondaryBtn ?
+			      			<RaisedButton
+			      				label={actionName}
+			      				type='submit'
+			      				secondary
+			      			/> :
+				      		<RaisedButton
+				      			label={actionName}
+			      				type='submit'
+			      				primary
+			      			/>
+		      			}
 			      	</form>
 		      	</div>
 		      </div>
@@ -43,7 +56,8 @@ const BookGallery = ({
 BookGallery.PropTypes = {
 	books: PropTypes.object.isRequired,
 	actionName: PropTypes.string.isRequired,
-	onAction: PropTypes.func.isRequired
+	onAction: PropTypes.func.isRequired,
+	buttonStyle: PropTypes.string
 }
 
 export default BookGallery
