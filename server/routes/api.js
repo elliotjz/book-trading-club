@@ -4,9 +4,19 @@ const User = require('mongoose').model('User');
 const router = new express.Router()
 
 router.get('/allbooks', (req, res) => {
-	res.status(200).json({
-		message: "Secret Message"
-	})
+  let allBooks = []
+  User.find({}, (err, data) => {
+    data.forEach((user) => {
+      let books = user.books
+      books.forEach((book) => {
+        allBooks.push(book)
+      })
+    })
+    res.status(200).json({
+      allBooks
+    })
+  })
+	
 })
 
 router.post('/addbook', (req, res) => {

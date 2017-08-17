@@ -8,7 +8,7 @@ class AllBooksPage extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			secretData: ''
+			allBooks: []
 		}
 	}
 
@@ -22,7 +22,7 @@ class AllBooksPage extends React.Component {
     xhr.addEventListener('load', () => {
       if (xhr.status === 200) {
         this.setState({
-          secretData: xhr.response.message
+          allBooks: xhr.response.allBooks
         });
       }
     });
@@ -33,8 +33,7 @@ class AllBooksPage extends React.Component {
     return Auth.isUserAuthenticated() ?
     (
       <AllBooks
-        secretData={this.state.secretData}
-        onAddBook={this.addBook}
+        allBooks={this.state.allBooks}
       />
     ) :
     (

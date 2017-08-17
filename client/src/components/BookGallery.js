@@ -27,22 +27,24 @@ const BookGallery = ({
 		      			<p>Image not found</p>
 		      		</div>
 		      	}
-		      	<div className='gallery-action-btn'>
-			      	<form onSubmit={onAction} id={index}>
-			      		{secondaryBtn ?
-			      			<RaisedButton
-			      				label={actionName}
-			      				type='submit'
-			      				secondary
-			      			/> :
-				      		<RaisedButton
-				      			label={actionName}
-			      				type='submit'
-			      				primary
-			      			/>
-		      			}
-			      	</form>
-		      	</div>
+		      	{onAction && (
+			      	<div className='gallery-action-btn'>
+				      	<form onSubmit={onAction} id={index}>
+				      		{secondaryBtn ?
+				      			<RaisedButton
+				      				label={actionName}
+				      				type='submit'
+				      				secondary
+				      			/> :
+					      		<RaisedButton
+					      			label={actionName}
+				      				type='submit'
+				      				primary
+				      			/>
+			      			}
+				      	</form>
+			      	</div>
+			      )}
 		      </div>
 				) 
 			}) :
@@ -55,8 +57,8 @@ const BookGallery = ({
 
 BookGallery.PropTypes = {
 	books: PropTypes.object.isRequired,
-	actionName: PropTypes.string.isRequired,
-	onAction: PropTypes.func.isRequired,
+	actionName: PropTypes.string,
+	onAction: PropTypes.func,
 	buttonStyle: PropTypes.string
 }
 

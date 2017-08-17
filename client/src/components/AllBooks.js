@@ -1,21 +1,23 @@
 import React from 'react';
 import PropTypes from 'prop-types'
-import { Card, CardTitle, CardText } from 'material-ui/Card';
+import BookGallery from './BookGallery'
 
 
-const AllBooks = ({ secretData }) => (
-  <Card className="container">
-    <CardTitle
-      title="All Books"
-      subtitle="You should get access to this page only after authentication."
-    />
+class AllBooks extends React.Component {
 
-    {secretData && <CardText style={{ fontSize: '16px', color: 'green' }}>{secretData}</CardText>}
-  </Card>
-)
+	render() {
+		console.log(this.props.allBooks)
+		return (
+			<div id='allbooks-page'>
+		    <h1>All Books</h1>
+		    {this.props.allBooks && <BookGallery books={this.props.allBooks}/> }
+		  </div>
+		)
+	}
+}
 
 AllBooks.PropTypes = {
-	secretData: PropTypes.string.isRequired
+	allBooks: PropTypes.string.isRequired
 }
 
 export default AllBooks;
