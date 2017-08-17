@@ -13,11 +13,13 @@ class MyBooksPage extends React.Component {
 			query: '',
 			message: '',
 			searchResults: [],
-      userBooks: []
+      userBooks: [],
+      loading: false
 		}
 
 		this.bookSearch = this.bookSearch.bind(this)
 		this.queryChange = this.queryChange.bind(this)
+    this.addBook = this.addBook.bind(this)
 	}
 
 	bookSearch(event) {
@@ -66,6 +68,36 @@ class MyBooksPage extends React.Component {
 		})
 	}
 
+  addBook(bookId) {
+    const xhr = new XMLHttpRequest();
+    xhr.open('post', '/api/addbook');
+    xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    // set the authorization HTTP header
+    xhr.setRequestHeader('Authorization', `bearer ${Auth.getToken()}`)
+    const email = JSON.parse(localStorage.getItem('user')).email
+    xhr.setRequestHeader('email', email)
+    const book = this.state.searchResults[bookId]
+    xhr.setRequestHeader('book', JSON.stringify(book))
+    xhr.responseType = 'json';
+    xhr.addEventListener('load', () => {
+      console.log('xhr.response.user:')
+      console.log(xhr.response.userData)
+      if (xhr.status === 200) {
+        localStorage.setItem('user', JSON.stringify(xhr.response.userData))
+        this.setState({
+          userBooks: xhr.response.userData.books
+        })
+      }
+    });
+    xhr.send();
+  }
+
+  componentDidMount() {
+    this.setState({
+      userBooks: JSON.parse(localStorage.getItem('user')).books
+    })
+  }
+
   render() {
   	return Auth.isUserAuthenticated() ?
     (
@@ -75,6 +107,7 @@ class MyBooksPage extends React.Component {
       	query={this.state.query}
       	searchResults={this.state.searchResults}
         userBooks={this.state.userBooks}
+        onAddBook={this.addBook}
       />
     ) :
     (

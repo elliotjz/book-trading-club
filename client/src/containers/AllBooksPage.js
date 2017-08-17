@@ -32,7 +32,10 @@ class AllBooksPage extends React.Component {
   render() {
     return Auth.isUserAuthenticated() ?
     (
-      <AllBooks secretData={this.state.secretData}/>
+      <AllBooks
+        secretData={this.state.secretData}
+        onAddBook={this.addBook}
+      />
     ) :
     (
       <Redirect to="/" push />
@@ -42,3 +45,6 @@ class AllBooksPage extends React.Component {
 }
 
 export default AllBooksPage
+
+
+

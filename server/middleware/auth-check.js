@@ -6,8 +6,6 @@ const User = require('mongoose').model('User');
  *  The Auth Checker middleware function.
  */ 
 module.exports = (req, res, next) => {
-  console.log(process.env.JWT_SECRET)
-  console.log(process.env.MLAB_URL)
   if (!req.headers.authorization) {
     return res.status(401).end();
   }

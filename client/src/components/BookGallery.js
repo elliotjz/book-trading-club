@@ -1,9 +1,12 @@
-import React from 'react'
+ import React from 'react'
 import PropTypes from 'prop-types'
 import RaisedButton from 'material-ui/RaisedButton';
-import { Link } from 'react-router-dom'
 
-const BookGallery = ({ books }) => (
+const BookGallery = ({
+	books,
+	actionName,
+	onAction
+}) => (
 	<div id='book-gallery'>
 		{books.length !== 0 ?
 			books.map( (item, index) => {
@@ -19,9 +22,13 @@ const BookGallery = ({ books }) => (
 		      		</div>
 		      	}
 		      	<div className='add-book-btn'>
-			      	<Link to='/addbook'>
-			      		<RaisedButton label='Add Book' primary/>
-			      	</Link>
+			      	<form onSubmit={onAction} id={index}>
+			      		<RaisedButton
+			      			label={actionName}
+		      				type='submit'
+		      				primary
+		      			/>
+			      	</form>
 		      	</div>
 		      </div>
 				) 
@@ -34,7 +41,10 @@ const BookGallery = ({ books }) => (
 )
 
 BookGallery.PropTypes = {
-	books: PropTypes.object.isRequired
+	books: PropTypes.object.isRequired,
+	actionName: PropTypes.string.isRequired,
+	onAction: PropTypes.func.isRequired
 }
 
 export default BookGallery
+
