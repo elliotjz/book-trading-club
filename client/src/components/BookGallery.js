@@ -12,7 +12,7 @@ const BookGallery = ({
 		{books.length !== 0 ?
 			books.map( (item, index) => {
 				return (
-					<div className='result' key={index}>
+					<div className='result' key={index} id={item.id ? item.id : index}>
 						<div className='book-info'>
 							<div className='two-line-ellipsis'>
 			      		<p><b>{item.title}</b></p>

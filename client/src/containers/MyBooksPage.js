@@ -85,10 +85,7 @@ class MyBooksPage extends React.Component {
     xhr.responseType = 'json';
     xhr.addEventListener('load', () => {
       if (xhr.status === 200) {
-        localStorage.setItem('user', JSON.stringify(xhr.response.userData))
-        this.setState({
-          userBooks: xhr.response.userData.books
-        })
+        this.getUserBooks()
       }
     });
     xhr.send();
@@ -109,20 +106,43 @@ class MyBooksPage extends React.Component {
 
     xhr.responseType = 'json';
     xhr.addEventListener('load', () => {
-      if (xhr.status === 200) {
-        localStorage.setItem('user', JSON.stringify(xhr.response.userData))
+      if (xhr.status === 406) {
+        console.log('Error: Book not found on database.')
+      }
+      if (xhr.status === 200 || xhr.status === 406) {
+        let userBooks = this.state.userBooks
+        userBooks.splice(bookId, 1)
         this.setState({
-          userBooks: xhr.response.userData.books
+          userBooks
         })
       }
     });
     xhr.send();
   }
 
-  componentDidMount() {
-    this.setState({
-      userBooks: JSON.parse(localStorage.getItem('user')).books
-    })
+  getUserBooks() {
+    const xhr = new XMLHttpRequest();
+    xhr.open('get', '/api/mybooks');
+    xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    // set the authorization HTTP header
+    xhr.setRequestHeader('Authorization', `bearer ${Auth.getToken()}`)
+
+    const email = JSON.parse(localStorage.getItem('user')).email
+    xhr.setRequestHeader('email', email)
+
+    xhr.responseType = 'json';
+    xhr.addEventListener('load', () => {
+      if (xhr.status === 200) {
+        this.setState({
+          userBooks: xhr.response.userBooks
+        })
+      }
+    });
+    xhr.send();
+  }
+
+  componentWillMount() {
+    this.getUserBooks()
   }
 
   render() {

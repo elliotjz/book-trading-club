@@ -1,92 +1,81 @@
 const express = require('express')
 const UserModel = require('../models/user')
-const User = require('mongoose').model('User');
+const User = require('mongoose').model('User')
+const Book = require('mongoose').model('Book')
 const router = new express.Router()
 
 router.get('/allbooks', (req, res) => {
   let allBooks = []
-  User.find({}, (err, data) => {
-    data.forEach((user) => {
-      let books = user.books
-      books.forEach((book) => {
-        allBooks.push(book)
+  Book.find({}, (err, data) => {
+    if (err) throw err;
+    if (data) {
+      data.forEach((book) => {
+        allBooks.push({
+          title: book.title,
+          author: book.author,
+          id: book.id,
+          thumbnail: book.thumbnail
+        })
       })
-    })
+    }
     res.status(200).json({
       allBooks
     })
   })
-	
 })
 
-router.post('/addbook', (req, res) => {
-  User.findOne({ email: req.headers.email }, (err, data) => {
-  	if (err) throw err
-  	if (data) {
-  		data.books.push(JSON.parse(req.headers.book))
-  		// add book to user's database
-  		User.update({ email: req.headers.email }, {
-  			$set: { books: data.books }
-  		}, (err, data) => {
-  			if (err) throw err
-  		})
 
-  		res.status(200).json({
-		    userData: {
-		    	name: data.name,
-		    	email: data.email,
-		    	books: data.books
-		    }
-		  })
-  	} else {
-  		res.status(200).json({
-  			error: 'User not found'
-  		})
-  	} 	
-  })
-})
+router.get('/mybooks', (req, res) => {
 
-router.post('/removebook', (req, res) => {
-  User.findOne({ email: req.headers.email }, (err, data) => {
+  let userBooks = []
+  Book.find({ ownerEmail: req.headers.email }, (err, data) => {
     if (err) throw err
     if (data) {
-      const indexOfBook = findIndexOfBook(JSON.parse(req.headers.book), data.books)
-      if (indexOfBook >= 0) {
-        data.books.splice(indexOfBook, 1)
-
-        // add book to user's database
-        User.update({ email: req.headers.email }, {
-          $set: { books: data.books }
-        }, (err, data) => {
-          if (err) throw err
+      data.forEach((book) => {
+        userBooks.push({
+          id: book.id,
+          author: book.author,
+          title: book.title,
+          thumbnail: book.thumbnail
         })
-      } else {
-        console.log('error: Book wasn\'t found')
-      }
-      res.status(200).json({
-        userData: {
-          name: data.name,
-          email: data.email,
-          books: data.books
-        }
       })
-    } else {
-      res.status(200).json({
-        error: 'User not found'
-      })
-    }   
+    }
+    res.status(200).json({
+      userBooks
+    })
   })
 })
 
-// Finds the index of a book in an array
-function findIndexOfBook(book, array) {
-  book = JSON.stringify(book)
-  for (let i = 0; i < array.length; i++) {
-    if (book === JSON.stringify(array[i])) {
-      return i
+
+router.post('/addbook', (req, res) => {
+
+  let bookData = JSON.parse(req.headers.book)
+  bookData['ownerEmail'] = req.headers.email
+  bookData['id'] = makeBookId()
+
+  const newBook = new Book(bookData)
+  newBook.save((err) => {
+    if (err) throw err
+    res.status(200).end()
+  })
+})
+
+
+router.post('/removebook', (req, res) => {
+  const id = JSON.parse(req.headers.book).id
+  Book.remove({ id: id }, (err, data) => {
+    if (err) throw err
+    if (data) {
+      res.status(200).end()
+    } else {
+      res.status(406).end()
     }
-  }
-  return -1
+  })
+})
+
+
+function makeBookId() {
+  return Math.floor(Math.random() * 999999999999999)
 }
 
 module.exports = router

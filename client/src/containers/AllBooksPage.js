@@ -10,7 +10,15 @@ class AllBooksPage extends React.Component {
 		this.state = {
 			allBooks: []
 		}
+
+    this.requestTrade = this.requestTrade.bind(this)
 	}
+
+  requestTrade(bookId) {
+
+    console.log('Requesting trade for book with id: ' +
+      this.state.allBooks[bookId].id)
+  }
 
 	componentDidMount() {
     const xhr = new XMLHttpRequest();
@@ -34,6 +42,7 @@ class AllBooksPage extends React.Component {
     (
       <AllBooks
         allBooks={this.state.allBooks}
+        requestTrade={this.requestTrade}
       />
     ) :
     (

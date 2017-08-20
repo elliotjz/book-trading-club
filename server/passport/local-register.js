@@ -15,7 +15,6 @@ module.exports = new PassportLocalStrategy({
     email: email.trim(),
     password: password.trim(),
     name: req.body.name.trim(),
-    books: [],
     location: ''
   };
 
