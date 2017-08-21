@@ -25,6 +25,7 @@ class Menu extends React.Component {
 				{url: '/', text: 'Dashboard'},
 				{url: '/allbooks', text: 'All Books'},
 				{url: '/mybooks', text: 'My Books'},
+				{url: '/settings', text: 'Settings'},
 				{url: '/logout', text: 'Logout'}
 			] :
 			[
