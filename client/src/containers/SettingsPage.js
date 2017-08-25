@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 import SettingsNameForm from '../components/SettingsNameForm'
 import SettingsLocationForm from '../components/SettingsLocationForm'
 import SettingsPasswordForm from '../components/SettingsPasswordForm'
@@ -7,7 +7,7 @@ import Settings from '../components/Settings'
 class SettingsPage extends React.Component {
 
   constructor(props, context) {
-    super(props, context);
+    super(props, context)
 
     // set the initial component state
     this.state = {
@@ -17,15 +17,19 @@ class SettingsPage extends React.Component {
         name: '',
         location: ''
       },
+      userOnForm: {},
       showNameForm: false,
       showLocationForm: false,
       showPasswordForm: false
-    };
+    }
 
-    this.processForm = this.processForm.bind(this);
-    this.toggleNameForm = this.toggleNameForm.bind(this);
-    this.toggleLocationForm = this.toggleLocationForm.bind(this);
-    this.togglePasswordForm = this.togglePasswordForm.bind(this);
+    this.processPasswordChange = this.processPasswordChange.bind(this)
+    this.processNameChange = this.processNameChange.bind(this)
+    this.processLocationChange = this.processLocationChange.bind(this)
+    this.toggleNameForm = this.toggleNameForm.bind(this)
+    this.toggleLocationForm = this.toggleLocationForm.bind(this)
+    this.togglePasswordForm = this.togglePasswordForm.bind(this)
+    this.changeUser = this.changeUser.bind(this)
   }
 
   toggleNameForm() {
@@ -46,62 +50,76 @@ class SettingsPage extends React.Component {
   	})
   }
 
-  processForm(event) {
-    // prevent default action. in this case, action is the form submission event
-    event.preventDefault();
+  processPasswordChange(event) {
+    console.log('changing password')
+  }
 
-    // create a string for an HTTP body message
-    const name = encodeURIComponent(this.state.user.name);
-    const email = encodeURIComponent(this.state.user.email);
-    const password = encodeURIComponent(this.state.user.password);
-    const formData = `name=${name}&email=${email}&password=${password}`;
+  processNameChange(event) {
+    event.preventDefault()
+    console.log('processing name change')
+    const name = encodeURIComponent(this.state.userOnForm.name)
+    const email = encodeURIComponent(this.state.user.email)
+    const formData = `name=${name}&email=${email}`
+    this.makeXmlRequest(formData)
+  }
 
-    // create an AJAX request
-    const xhr = new XMLHttpRequest();
-    xhr.open('post', '/auth/register');
-    xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-    xhr.responseType = 'json';
+  processLocationChange(event) {
+    event.preventDefault()
+    console.log('processing location change')
+    const email = encodeURIComponent(this.state.user.email)
+    const location = encodeURIComponent(this.state.userOnForm.location)
+    const formData = `location=${location}&email=${email}`
+    this.makeXmlRequest(formData)
+  }
+
+  makeXmlRequest(formData) {
+    const xhr = new XMLHttpRequest()
+    xhr.open('post', '/auth/changeuserdata')
+    xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded')
+    xhr.responseType = 'json'
     xhr.addEventListener('load', () => {
+      console.log('loaded')
       if (xhr.status === 200) {
-
         // change the component-container state
         this.setState({
-          errors: {}
-        });
+          errors: {},
+          showNameForm: false,
+          showLocationForm: false,
+          user: {
+            email: this.state.userOnForm.email,
+            name: this.state.userOnForm.name,
+            location: this.state.userOnForm.location
+          },
+        })
 
         // set a message
-        localStorage.setItem('successMessage', xhr.response.message);
+        localStorage.setItem('successMessage', xhr.response.message)
 
-        // make a redirect
-        this.setState({
-          successfulRegistration: true
-        })
       } else {
-
-        const errors = xhr.response.errors ? xhr.response.errors : {};
-        errors.summary = xhr.response.message;
-
+        console.log('status is not 200')
+        const error = xhr.response.error ? xhr.response.error : ''
+        console.log('error: ' + error)
         this.setState({
-          errors
-        });
+          error
+        })
       }
-    });
-    xhr.send(formData);
+    })
+    xhr.send(formData)
   }
 
   changeUser(event) {
-    const field = event.target.name;
-    const user = this.state.user;
-    user[field] = event.target.value;
-
+    const field = event.target.name
+    const userOnForm = this.state.userOnForm
+    userOnForm[field] = event.target.value
     this.setState({
-      user
-    });
+      userOnForm
+    })
   }
 
   getUserData() {
   	this.setState({
-  		user: JSON.parse(localStorage.getItem('user'))
+  		user: JSON.parse(localStorage.getItem('user')),
+      userOnForm: JSON.parse(localStorage.getItem('user'))
   	})
   }
 
@@ -120,30 +138,30 @@ class SettingsPage extends React.Component {
     		/>
     		{this.state.showNameForm ?
     			<SettingsNameForm
-		        onSubmit={this.processForm}
+		        onSubmit={this.processNameChange}
 		        onChange={this.changeUser}
-		        errors={this.state.errors}
-		        user={this.state.user}
+		        error={this.state.error}
+		        user={this.state.userOnForm}
 		        closeForm={this.toggleNameForm}
 		      /> :
 		      null
     		}
     		{this.state.showLocationForm ?
     			<SettingsLocationForm
-		        onSubmit={this.processForm}
+		        onSubmit={this.processLocationChange}
 		        onChange={this.changeUser}
-		        errors={this.state.errors}
-		        user={this.state.user}
+		        error={this.state.error}
+		        user={this.state.userOnForm}
 		        closeForm={this.toggleLocationForm}
 		      /> :
 		      null
     		}
     		{this.state.showPasswordForm ?
     			<SettingsPasswordForm
-		        onSubmit={this.processForm}
+		        onSubmit={this.processPasswordChange}
 		        onChange={this.changeUser}
 		        errors={this.state.errors}
-		        user={this.state.user}
+		        user={this.state.userOnForm}
 		        closeForm={this.togglePasswordForm}
 		      /> :
 		      null
@@ -154,7 +172,7 @@ class SettingsPage extends React.Component {
 
 }
 
-export default SettingsPage;
+export default SettingsPage
 
 
 

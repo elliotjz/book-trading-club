@@ -1,16 +1,11 @@
+'use strict'
+
 const express = require('express');
 const validator = require('validator');
 const passport = require('passport');
-
+const User = require('mongoose').model('User')
 const router = new express.Router();
 
-/**
- * Validate the  register form
- *
- * @param {object} payload - the HTTP body message
- * @returns {object} The result of validation. Object contains a boolean validation result,
- *                   errors tips, and a global message for the whole form.
- */
 function validateRegisterForm(payload) {
   const errors = {};
   let isFormValid = true;
@@ -42,13 +37,6 @@ function validateRegisterForm(payload) {
   };
 }
 
-/**
- * Validate the login form
- *
- * @param {object} payload - the HTTP body message
- * @returns {object} The result of validation. Object contains a boolean validation result,
- *                   errors tips, and a global message for the whole form.
- */
 function validateLoginForm(payload) {
   const errors = {};
   let isFormValid = true;
@@ -73,6 +61,25 @@ function validateLoginForm(payload) {
     message,
     errors
   };
+}
+
+function validateChangeUserProp(newProp) {
+  let error = ''
+  let isFormValid = true
+  let message = ''
+  console.log('new Prop:')
+  console.log(newProp)
+
+  if (!newProp || typeof newProp !== 'string' || newProp.trim().length === 0) {
+    console.log('form is not valid')
+    isFormValid = false
+    error = 'Please enter something'
+  }
+
+  return {
+    success: isFormValid,
+    error
+  }
 }
 
 router.post('/register', (req, res, next) => {
@@ -148,6 +155,43 @@ router.post('/login', (req, res, next) => {
     });
   })(req, res, next);
 });
+
+router.post('/changeuserdata', (req, res, next) => {
+
+  console.log('req.body:')
+  console.log(req.body)
+  const nameChange = req.body.name || req.body.name === ''
+  const newProp = req.body.name || req.body.name === '' ? req.body.name : req.body.location
+  const validationResult = validateChangeUserProp(newProp)
+  if (!validationResult.success) {
+    console.log('error:')
+    console.log(validationResult.error)
+    return res.status(400).json({
+      success: false,
+      error: validationResult.error
+    });
+  }
+  if (nameChange) {
+    User.update({ email: req.body.email }, {
+      $set: {
+        name: req.body.name
+      }
+    }, (err) => {
+      if (err) throw err
+    })
+  } else {
+    User.update({ email: req.body.email }, {
+      $set: {
+        location: req.body.location
+      }
+    }, (err) => {
+      if (err) throw err
+    })
+  }
+  res.status(200).json({
+    success: true,
+  })
+})
 
 module.exports = router;
 

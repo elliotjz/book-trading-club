@@ -18,13 +18,11 @@ class SettingsLocationForm extends React.Component {
           <form action="/" onSubmit={this.props.onSubmit}>
             <h2 className="card-heading">Change Location</h2>
 
-            {this.props.errors.summary && <p className="error-message">{this.props.errors.summary}</p>}
-
             <div className="field-line">
               <TextField
                 floatingLabelText="Location"
                 name="location"
-                errorText={this.props.errors.location}
+                errorText={this.props.error}
                 onChange={this.props.onChange}
                 value={this.props.user.location}
               />
@@ -43,7 +41,7 @@ class SettingsLocationForm extends React.Component {
 SettingsLocationForm.PropTypes = {
   onSubmit: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
-  errors: PropTypes.object.isRequired,
+  error: PropTypes.object.isRequired,
   user: PropTypes.object.isRequired
 }
 
