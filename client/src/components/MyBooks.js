@@ -1,9 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import RaisedButton from 'material-ui/RaisedButton';
-import TextField from 'material-ui/TextField';
+import RaisedButton from 'material-ui/RaisedButton'
+import TextField from 'material-ui/TextField'
 import BookGallery from './BookGallery'
-import Divider from 'material-ui/Divider';
+import Divider from 'material-ui/Divider'
+import CircularProgress from 'material-ui/CircularProgress';
 
 
 class MyBooks extends React.Component {
@@ -22,21 +23,26 @@ class MyBooks extends React.Component {
     return (
     	<div id='mybooks-page'>
     		<h2>My Books</h2>
-        {this.props.userBooks.length > 0 ?
-          <BookGallery
-            books={this.props.userBooks}
-            actionName='Remove'
-            onAction={this.removeBook.bind(this)}
-            secondaryBtn={true}
-          /> :
+        {this.props.myBooksLoading &&
+          <CircularProgress />
+        }
+        {(this.props.userBooks.length === 0 && !this.props.myBooksLoading) ?
           <div>
             <p>You don't currently have any books. Seach for a book below to add one.</p>
-          </div>
+          </div> :
+          null
         }
+        <BookGallery
+          books={this.props.userBooks}
+          actionName='Remove'
+          onAction={this.removeBook.bind(this)}
+          secondaryBtn={true}
+        />
         
         <div className='divider'>
           <Divider />
       	</div>
+
         <form onSubmit={this.props.bookSearch}>
       		<div className="field-line">
             <TextField
@@ -48,6 +54,9 @@ class MyBooks extends React.Component {
             <RaisedButton type="submit" label="Search" primary />
           </div>
         </form>
+        {this.props.searchLoading &&
+          <CircularProgress />
+        }
       	<BookGallery
           books={this.props.searchResults}
           actionName='Add Book'
@@ -64,7 +73,9 @@ MyBooks.PropTypes = {
 	query: PropTypes.string.isRequired,
 	searchResults: PropTypes.object.isRequired,
   userBooks: PropTypes.object.isRequired,
-  addBook: PropTypes.func.isRequired
+  addBook: PropTypes.func.isRequired,
+  myBooksLoading: PropTypes.bool.isRequired,
+  searchLoading: PropTypes.bool.isRequired
 }
 
 export default MyBooks

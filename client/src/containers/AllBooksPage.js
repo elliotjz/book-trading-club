@@ -3,12 +3,14 @@ import { Redirect } from 'react-router-dom'
 import Auth from '../modules/Auth'
 import AllBooks from '../components/AllBooks'
 
+
 class AllBooksPage extends React.Component {
 
 	constructor(props) {
 		super(props);
 		this.state = {
-			allBooks: []
+			allBooks: [],
+      loading: true
 		}
 
     this.requestTrade = this.requestTrade.bind(this)
@@ -30,7 +32,8 @@ class AllBooksPage extends React.Component {
     xhr.addEventListener('load', () => {
       if (xhr.status === 200) {
         this.setState({
-          allBooks: xhr.response.allBooks
+          allBooks: xhr.response.allBooks,
+          loading: false
         });
       }
     });
@@ -43,6 +46,7 @@ class AllBooksPage extends React.Component {
       <AllBooks
         allBooks={this.state.allBooks}
         requestTrade={this.requestTrade}
+        loading={this.state.loading}
       />
     ) :
     (

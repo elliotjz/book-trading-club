@@ -20,11 +20,18 @@ class SettingsLocationForm extends React.Component {
 
             <div className="field-line">
               <TextField
-                floatingLabelText="Location"
-                name="location"
-                errorText={this.props.error}
+                floatingLabelText="State"
+                name="state"
+                errorText={this.props.errors.state}
                 onChange={this.props.onChange}
-                value={this.props.user.location}
+                value={this.props.user.state}
+              />
+              <TextField
+                floatingLabelText="City"
+                name="city"
+                errorText={this.props.errors.city}
+                onChange={this.props.onChange}
+                value={this.props.user.city}
               />
             </div>
 

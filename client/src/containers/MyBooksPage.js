@@ -14,7 +14,8 @@ class MyBooksPage extends React.Component {
 			message: '',
 			searchResults: [],
       userBooks: [],
-      loading: false
+      myBooksLoading: true,
+      searchLoading: false
 		}
 
 		this.bookSearch = this.bookSearch.bind(this)
@@ -26,10 +27,12 @@ class MyBooksPage extends React.Component {
 	bookSearch(event) {
     event.preventDefault()
 
-    // Get query from form
     const query = encodeURIComponent(this.state.query)
-		
-    // AXAJ request
+
+		this.setState({
+      searchLoading: true
+    })
+
     $.ajax({
     	url: 'https://www.googleapis.com/books/v1/volumes?q=' + query,
     	type: 'GET',
@@ -49,7 +52,8 @@ class MyBooksPage extends React.Component {
     		}
     		
     		this.setState({
-    			searchResults
+    			searchResults,
+          searchLoading: false
     		})
     	},
     	error: (xhr,status,error) => {
@@ -70,6 +74,9 @@ class MyBooksPage extends React.Component {
 	}
 
   addBook(bookId) {
+    this.setState({
+      myBooksLoading: true
+    })
     const xhr = new XMLHttpRequest();
     xhr.open('post', '/api/addbook');
     xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
@@ -92,6 +99,9 @@ class MyBooksPage extends React.Component {
   }
 
   removeBook(bookId) {
+    this.setState({
+      myBooksLoading: true
+    })
     const xhr = new XMLHttpRequest();
     xhr.open('post', '/api/removebook');
     xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
@@ -113,7 +123,8 @@ class MyBooksPage extends React.Component {
         let userBooks = this.state.userBooks
         userBooks.splice(bookId, 1)
         this.setState({
-          userBooks
+          userBooks,
+          myBooksLoading: false
         })
       }
     });
@@ -121,6 +132,11 @@ class MyBooksPage extends React.Component {
   }
 
   getUserBooks() {
+
+    this.setState({
+      myBooksLoading: true
+    })
+
     const xhr = new XMLHttpRequest();
     xhr.open('get', '/api/mybooks');
     xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
@@ -134,14 +150,15 @@ class MyBooksPage extends React.Component {
     xhr.addEventListener('load', () => {
       if (xhr.status === 200) {
         this.setState({
-          userBooks: xhr.response.userBooks
+          userBooks: xhr.response.userBooks,
+          myBooksLoading: false
         })
       }
     });
     xhr.send();
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.getUserBooks()
   }
 
@@ -156,6 +173,8 @@ class MyBooksPage extends React.Component {
         userBooks={this.state.userBooks}
         addBook={this.addBook}
         removeBook={this.removeBook}
+        myBooksLoading={this.state.myBooksLoading}
+        searchLoading={this.state.searchLoading}
       />
     ) :
     (

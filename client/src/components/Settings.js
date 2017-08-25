@@ -24,9 +24,11 @@ class Settings extends React.Component {
 	}
 
 	render() {
-		const location = this.props.user.location === '' ?
+
+		const locationText = this.props.user.state === '' && this.props.user.city === '' ?
 		'Not Set' :
-		this.props.user.location
+		this.props.user.city + ', ' + this.props.user.state
+
 		return (
 			<div id='settings'>
 				<Table>
@@ -40,7 +42,7 @@ class Settings extends React.Component {
 						</TableRow>
 						<TableRow>
 							<TableRowColumn>Location:</TableRowColumn>
-							<TableRowColumn>{location}</TableRowColumn>
+							<TableRowColumn>{locationText}</TableRowColumn>
 							<TableRowColumn>
 								<FlatButton label='Change Location' onClick={this.changeLocation} primary/>
 							</TableRowColumn>

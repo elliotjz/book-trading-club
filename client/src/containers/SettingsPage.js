@@ -9,13 +9,13 @@ class SettingsPage extends React.Component {
   constructor(props, context) {
     super(props, context)
 
-    // set the initial component state
     this.state = {
       errors: {},
       user: {
         email: '',
         name: '',
-        location: ''
+        state: '',
+        city: ''
       },
       userOnForm: {},
       showNameForm: false,
@@ -33,15 +33,40 @@ class SettingsPage extends React.Component {
   }
 
   toggleNameForm() {
-  	this.setState({
-  		showNameForm: !this.state.showNameForm
-  	})
+    // Deleting data from userOnForm if form is closed
+    if (this.state.showNameForm) {
+      this.setState({
+        userOnForm: {
+          name: this.state.user.name,
+          email: this.state.user.email,
+          city: this.state.user.city,
+          state: this.state.user.state
+        },
+        showNameForm: false
+      })
+    } else {
+    	this.setState({
+    		showNameForm: true
+    	})
+    }
   }
 
   toggleLocationForm() {
-  	this.setState({
-  		showLocationForm: !this.state.showLocationForm
-  	})
+    if (this.state.showLocationForm) {
+      this.setState({
+        userOnForm: {
+          name: this.state.user.name,
+          email: this.state.user.email,
+          city: this.state.user.city,
+          state: this.state.user.state,
+        },
+        showLocationForm: false
+      })
+    } else {
+      this.setState({
+        showLocationForm: true
+      })
+    }
   }
 
   togglePasswordForm() {
@@ -51,12 +76,44 @@ class SettingsPage extends React.Component {
   }
 
   processPasswordChange(event) {
-    console.log('changing password')
+    event.preventDefault()
+    const email = encodeURIComponent(this.state.user.email)
+
+    const oldPassword = this.state.userOnForm.oldPassword ?
+      encodeURIComponent(this.state.userOnForm.oldPassword) :
+      ''
+
+    const newPassword = this.state.userOnForm.newPassword ?
+      encodeURIComponent(this.state.userOnForm.newPassword) :
+      ''
+
+    const formData = `email=${email}&oldPassword=${oldPassword}&newPassword=${newPassword}`
+
+    const xhr = new XMLHttpRequest();
+    xhr.open('post', '/auth/changepassword');
+    xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    xhr.responseType = 'json';
+    xhr.addEventListener('load', () => {
+      if (xhr.status === 200) {
+
+        this.setState({
+          errors: {},
+          showPasswordForm: false
+        });
+        
+      } else {
+        const errors = xhr.response.errors ? xhr.response.errors : {};
+
+        this.setState({
+          errors
+        })
+      }
+    })
+    xhr.send(formData);
   }
 
   processNameChange(event) {
     event.preventDefault()
-    console.log('processing name change')
     const name = encodeURIComponent(this.state.userOnForm.name)
     const email = encodeURIComponent(this.state.user.email)
     const formData = `name=${name}&email=${email}`
@@ -65,10 +122,10 @@ class SettingsPage extends React.Component {
 
   processLocationChange(event) {
     event.preventDefault()
-    console.log('processing location change')
     const email = encodeURIComponent(this.state.user.email)
-    const location = encodeURIComponent(this.state.userOnForm.location)
-    const formData = `location=${location}&email=${email}`
+    const state = encodeURIComponent(this.state.userOnForm.state)
+    const city = encodeURIComponent(this.state.userOnForm.city)
+    const formData = `state=${state}&city=${city}&email=${email}`
     this.makeXmlRequest(formData)
   }
 
@@ -78,9 +135,7 @@ class SettingsPage extends React.Component {
     xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded')
     xhr.responseType = 'json'
     xhr.addEventListener('load', () => {
-      console.log('loaded')
       if (xhr.status === 200) {
-        // change the component-container state
         this.setState({
           errors: {},
           showNameForm: false,
@@ -88,19 +143,20 @@ class SettingsPage extends React.Component {
           user: {
             email: this.state.userOnForm.email,
             name: this.state.userOnForm.name,
-            location: this.state.userOnForm.location
+            city: this.state.userOnForm.city,
+            state: this.state.userOnForm.state
           },
         })
 
-        // set a message
-        localStorage.setItem('successMessage', xhr.response.message)
+        localStorage.setItem('user', JSON.stringify(this.state.userOnForm))
 
       } else {
-        console.log('status is not 200')
-        const error = xhr.response.error ? xhr.response.error : ''
-        console.log('error: ' + error)
+        const errors = xhr.response.errors ? xhr.response.errors : {}
+        console.log('error: ' + errors)
         this.setState({
-          error
+          errors: {
+            errors
+          }
         })
       }
     })
@@ -140,7 +196,7 @@ class SettingsPage extends React.Component {
     			<SettingsNameForm
 		        onSubmit={this.processNameChange}
 		        onChange={this.changeUser}
-		        error={this.state.error}
+		        errors={this.state.errors}
 		        user={this.state.userOnForm}
 		        closeForm={this.toggleNameForm}
 		      /> :
@@ -150,7 +206,7 @@ class SettingsPage extends React.Component {
     			<SettingsLocationForm
 		        onSubmit={this.processLocationChange}
 		        onChange={this.changeUser}
-		        error={this.state.error}
+		        errors={this.state.errors}
 		        user={this.state.userOnForm}
 		        closeForm={this.toggleLocationForm}
 		      /> :
@@ -161,7 +217,6 @@ class SettingsPage extends React.Component {
 		        onSubmit={this.processPasswordChange}
 		        onChange={this.changeUser}
 		        errors={this.state.errors}
-		        user={this.state.userOnForm}
 		        closeForm={this.togglePasswordForm}
 		      /> :
 		      null

@@ -9,27 +9,45 @@ const UserSchema = new mongoose.Schema({
   },
   password: String,
   name: String,
-  location: String
+  city: String,
+  state: String
 })
 
-
-/**
- * Compare the passed password with the value in the database. A model method.
- *
- * @param {string} password
- * @returns {object} callback
- */
 UserSchema.methods.comparePassword = function comparePassword(password, callback) {
   bcrypt.compare(password, this.password, callback)
 }
 
 
-/**
- * The pre-save hook method.
- */
+UserSchema.pre('update', function saveHook(next) {
+
+  var update = this._update;
+
+  if (update.$set && update.$set.password) {
+
+    return bcrypt.genSalt((saltError, salt) => {
+
+      if (saltError) { return next(saltError) }
+
+      return bcrypt.hash(update.$set.password, salt, (hashError, hash) => {
+        if (hashError) { return next(hashError) }
+
+        // replace a password string with hash value
+        this.update({}, { password: hash })
+
+        return next()
+      })
+    })
+  }
+
+  next();
+});
+
 UserSchema.pre('save', function saveHook(next) {
   const user = this
+  hashPassword(user, next)
+})
 
+function hashPassword(user, next) {
   // proceed further only if the password is modified or the user is new
   if (!user.isModified('password')) return next()
 
@@ -46,7 +64,7 @@ UserSchema.pre('save', function saveHook(next) {
       return next()
     })
   })
-})
+}
 
 
 module.exports = mongoose.model('User', UserSchema)
