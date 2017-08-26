@@ -1,9 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
-import { Card, CardText } from 'material-ui/Card'
 import RaisedButton from 'material-ui/RaisedButton'
 import TextField from 'material-ui/TextField'
+import Divider from 'material-ui/Divider'
 
 
 const RegisterForm = ({
@@ -12,7 +12,7 @@ const RegisterForm = ({
   errors,
   user,
 }) => (
-  <Card className="container">
+  <div className="container">
     <form action="/" onSubmit={onSubmit}>
       <h2 className="card-heading">Register</h2>
 
@@ -52,10 +52,15 @@ const RegisterForm = ({
       <div className="button-line">
         <RaisedButton type="submit" label="Create New Account" primary />
       </div>
-
-      <CardText>Already have an account? <Link to={'/login'}>Log in</Link></CardText>
+      <div className='divider'>
+        <Divider />
+      </div>
+      <p>Already have an account?</p>
+      <Link to={'/login'}>
+        <RaisedButton label='Login' primary/>
+      </Link>
     </form>
-  </Card>
+  </div>
 )
 
 RegisterForm.PropTypes = {

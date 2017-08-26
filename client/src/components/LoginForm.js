@@ -1,10 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom';
-import { Card, CardText } from 'material-ui/Card';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
-
+import Divider from 'material-ui/Divider'
 
 const LoginForm = ({
   onSubmit,
@@ -13,9 +12,9 @@ const LoginForm = ({
   successMessage,
   user
 }) => (
-  <Card className="container">
+  <div className="container">
     <form action="/" onSubmit={onSubmit}>
-      <h2 className="card-heading">Login</h2>
+      <h3 className="card-heading">Login</h3>
 
       {successMessage && <p className="success-message">{successMessage}</p>}
       {errors.summary && <p className="error-message">{errors.summary}</p>}
@@ -44,10 +43,15 @@ const LoginForm = ({
       <div className="button-line">
         <RaisedButton type="submit" label="Log in" primary />
       </div>
-
-      <CardText>Don't have an account? <Link to={'/register'}>Register</Link>.</CardText>
+      <div className='divider'>
+        <Divider />
+      </div>
+      <p>Don't have an account?</p>
+      <Link to='/register'>
+        <RaisedButton label='Register' primary className='home-btns'/>
+      </Link>
     </form>
-  </Card>
+  </div>
 );
 
 LoginForm.PropTypes = {

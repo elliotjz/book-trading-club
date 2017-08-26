@@ -13,6 +13,13 @@ body {
 	margin: 7px 0;
 }
 
+#home {
+	padding-top: 20vh;
+}
+.home-btns {
+	margin: 5px;
+}
+
 .divider {
 	width: 90%;
 	margin: 30px auto;
