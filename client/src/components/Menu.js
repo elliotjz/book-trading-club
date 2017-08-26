@@ -11,12 +11,15 @@ class Menu extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			wideScreen: false
+			wideScreen: false,
+			open: false
 		}
+
+		this.handleClose = this.handleClose.bind(this)
 	}
 
 	isWideScreen() {
-    return document.documentElement.clientWidth > 700
+    return document.documentElement.clientWidth > 830
   }
 
   getMenuItems() {
@@ -33,6 +36,12 @@ class Menu extends React.Component {
 				{url: '/login', text: 'Login'},
 				{url: '/register', text: 'Register'},
 			]
+	}
+
+	handleClose() {
+		this.setState({
+			open: false
+		})
 	}
 
   componentDidMount() {
@@ -60,15 +69,18 @@ class Menu extends React.Component {
 		) :
 		(
 			<IconMenu
-				iconButtonElement={<IconButton><MenuIcon /></IconButton>}
+				iconButtonElement={<IconButton><MenuIcon/></IconButton>}
 				anchorOrigin={{horizontal: 'right', vertical: 'top'}}
 				targetOrigin={{horizontal: 'right', vertical: 'top'}}
+				onRequestChange={open => this.setState({ open })}
+				open={this.state.open}
 			>
 				{menuItems.map( (item, index) => {
 					return (
 						<Link to={item.url} key={index} >
 							<MenuItem
 								primaryText={item.text}
+								onTouchTap={this.handleClose}
 							/>
 						</Link>
 					)

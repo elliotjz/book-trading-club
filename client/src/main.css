@@ -134,3 +134,30 @@ body {
 #progress-button {
 	padding: 2px;
 }
+
+.trades-btn {
+	margin: 5px;
+}
+
+.trade-request-container {
+	display: flex;
+	justify-content: center;
+}
+
+.trade-request {
+ 	width: 300px;
+	padding: 5px;
+	margin: 2px;
+	border: #ccc 1px solid;
+}
+
+.error-message {
+	font-size: 12px;
+	background-color: rgba(247, 66, 66, 0.3);
+	width: 300px;
+	padding: 6px;
+	border: 1px red solid;
+	border-radius: 5px;
+	margin: auto;
+	color: red;
+}

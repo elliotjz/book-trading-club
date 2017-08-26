@@ -5,7 +5,7 @@ import TextField from 'material-ui/TextField'
 import BookGallery from './BookGallery'
 import Divider from 'material-ui/Divider'
 import CircularProgress from 'material-ui/CircularProgress';
-
+import Trades from './Trades'
 
 class MyBooks extends React.Component {
   
@@ -22,7 +22,15 @@ class MyBooks extends React.Component {
   render() {
     return (
     	<div id='mybooks-page'>
-    		<h2>My Books</h2>
+        <Trades
+          user={this.props.user}
+          acceptTrade={this.props.acceptTrade}
+          cancelTrade={this.props.cancelTrade}
+        />
+        <div className='divider'>
+          <Divider />
+        </div>
+    		<h3>My Books</h3>
         {this.props.myBooksLoading &&
           <CircularProgress />
         }
@@ -43,6 +51,7 @@ class MyBooks extends React.Component {
           <Divider />
       	</div>
 
+        <h3>Search for a new book</h3>
         <form onSubmit={this.props.bookSearch}>
       		<div className="field-line">
             <TextField

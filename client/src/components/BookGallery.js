@@ -12,7 +12,7 @@ const BookGallery = ({
 		{books.length !== 0 ?
 			books.map( (item, index) => {
 				return (
-					<div className='result' key={index} id={item.id ? item.id : index}>
+					<div className='result' key={index} id={index}>
 						<div className='book-info'>
 							<div className='two-line-ellipsis'>
 			      		<p><b>{item.title}</b></p>
@@ -29,7 +29,7 @@ const BookGallery = ({
 		      	}
 		      	{onAction && (
 			      	<div className='gallery-action-btn'>
-				      	<form onSubmit={onAction} id={index}>
+				      	<form onSubmit={onAction} id={item.id ? item.id : index}>
 				      		{secondaryBtn ?
 				      			<RaisedButton
 				      				label={actionName}

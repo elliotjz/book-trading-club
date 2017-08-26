@@ -9,11 +9,13 @@ class MyBooksPage extends React.Component {
 
 	constructor(props) {
 		super(props);
+    let user = JSON.parse(localStorage.getItem('user'))
 		this.state = {
 			query: '',
 			message: '',
 			searchResults: [],
       userBooks: [],
+      user,
       myBooksLoading: true,
       searchLoading: false
 		}
@@ -22,6 +24,8 @@ class MyBooksPage extends React.Component {
 		this.queryChange = this.queryChange.bind(this)
     this.addBook = this.addBook.bind(this)
     this.removeBook = this.removeBook.bind(this)
+    this.acceptTrade = this.acceptTrade.bind(this)
+    this.cancelTrade = this.cancelTrade.bind(this)
 	}
 
 	bookSearch(event) {
@@ -158,6 +162,70 @@ class MyBooksPage extends React.Component {
     xhr.send();
   }
 
+  acceptTrade(id) {
+    const xhr = new XMLHttpRequest();
+    let email = JSON.parse(localStorage.getItem('user')).email
+    let requestData = `email=${email}&bookid=${id}`
+    xhr.open('post', '/api/accepttrade');
+    xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    // set the authorization HTTP header
+    xhr.setRequestHeader('Authorization', `bearer ${Auth.getToken()}`);
+    xhr.responseType = 'json';
+    xhr.addEventListener('load', () => {
+      if (xhr.status === 200) {
+        console.log('success')
+        console.log('incomingTrades from server:')
+        console.log(xhr.response.incomingTrades)
+        console.log('')
+        let user = this.state.user
+        user['incomingTrades'] = xhr.response.incomingTrades
+        localStorage.setItem('user', JSON.stringify(user))
+        this.setState({
+          user
+        })
+      }
+    });
+    xhr.send(requestData);
+  }
+
+  cancelTrade(id, isIncomingTrade) {
+    const xhr = new XMLHttpRequest();
+    let email = this.state.user.email
+    let requestData = `email=${email}&bookid=${id}&isIncomingTrade=${isIncomingTrade}`
+    xhr.open('post', '/api/canceltrade');
+    xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    // set the authorization HTTP header
+    xhr.setRequestHeader('Authorization', `bearer ${Auth.getToken()}`);
+    xhr.responseType = 'json';
+    xhr.addEventListener('load', () => {
+
+      if (xhr.status === 200) {
+
+        let user = this.state.user
+
+        if (isIncomingTrade) {
+          console.log('response:')
+          console.log(xhr.response.incomingTrades)
+          user['incomingTrades'] = xhr.response.incomingTrades
+          localStorage.setItem('user', JSON.stringify(user))
+          this.setState({
+            user
+          })
+        } else {
+          console.log('response:')
+          console.log(xhr.response.outgoingTrades)
+          user['outgoingTrades'] = xhr.response.outgoingTrades
+          localStorage.setItem('user', JSON.stringify(user))
+          this.setState({
+            user
+          })
+        }
+        
+      }
+    });
+    xhr.send(requestData);
+  }
+
   componentDidMount() {
     this.getUserBooks()
   }
@@ -166,15 +234,18 @@ class MyBooksPage extends React.Component {
   	return Auth.isUserAuthenticated() ?
     (
       <MyBooks
-      	bookSearch={this.bookSearch}
-      	queryChange={this.queryChange}
       	query={this.state.query}
       	searchResults={this.state.searchResults}
         userBooks={this.state.userBooks}
-        addBook={this.addBook}
-        removeBook={this.removeBook}
         myBooksLoading={this.state.myBooksLoading}
         searchLoading={this.state.searchLoading}
+        user={this.state.user}
+        bookSearch={this.bookSearch}
+        queryChange={this.queryChange}
+        addBook={this.addBook}
+        removeBook={this.removeBook}
+        acceptTrade={this.acceptTrade}
+        cancelTrade={this.cancelTrade}
       />
     ) :
     (

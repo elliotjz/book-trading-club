@@ -1,8 +1,9 @@
-import React from 'react';
+import React from 'react'
 import PropTypes from 'prop-types'
 import BookGallery from './BookGallery'
-import CircularProgress from 'material-ui/CircularProgress';
-
+import CircularProgress from 'material-ui/CircularProgress'
+import Trades from './Trades'
+import Divider from 'material-ui/Divider'
 
 class AllBooks extends React.Component {
 
@@ -14,10 +15,23 @@ class AllBooks extends React.Component {
 	render() {
 		return (
 			<div id='allbooks-page'>
-		    <h1>All Books</h1>
+				<Trades
+					user={this.props.user}
+					acceptTrade={this.props.acceptTrade}
+					cancelTrade={this.props.cancelTrade}
+				/>
+		    <div className='divider'>
+          <Divider />
+      	</div>
+		    <h3>All Books</h3>
+		    
 		    {this.props.loading &&
 		    	<CircularProgress />
 		    }
+		    {this.props.errorMessage !== '' &&
+		    	<p className='error-message'>{this.props.errorMessage}</p>
+		  	}
+		
 		    {this.props.allBooks &&
 		    	<BookGallery
 		    		books={this.props.allBooks}
@@ -31,7 +45,14 @@ class AllBooks extends React.Component {
 }
 
 AllBooks.PropTypes = {
-	allBooks: PropTypes.string.isRequired
+	allBooks: PropTypes.string.isRequired,
+  requestTrade: PropTypes.func.isRequired,
+  acceptTrade: PropTypes.func.isRequired,
+  cancelTrade: PropTypes.func.isRequired,
+  loading: PropTypes.bool.isRequired,
+  user: PropTypes.object.isRequired,
+  errorMessage: PropTypes.string.isRequired
 }
 
-export default AllBooks;
+export default AllBooks
+

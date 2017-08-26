@@ -41,15 +41,15 @@ class Settings extends React.Component {
 							</TableRowColumn>
 						</TableRow>
 						<TableRow>
-							<TableRowColumn>Location:</TableRowColumn>
+							<TableRowColumn>Location</TableRowColumn>
 							<TableRowColumn>{locationText}</TableRowColumn>
 							<TableRowColumn>
 								<FlatButton label='Change Location' onClick={this.changeLocation} primary/>
 							</TableRowColumn>
 						</TableRow>
 						<TableRow>
-							<TableRowColumn>Password:</TableRowColumn>
-							<TableRowColumn>Hidden</TableRowColumn>
+							<TableRowColumn>Password</TableRowColumn>
+							<TableRowColumn></TableRowColumn>
 							<TableRowColumn>
 								<FlatButton label='Change Password' onClick={this.changePassword} primary/>
 							</TableRowColumn>

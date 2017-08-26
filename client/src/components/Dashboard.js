@@ -1,15 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types'
-import { Card, CardTitle, CardText } from 'material-ui/Card';
 import RaisedButton from 'material-ui/RaisedButton'
 import { Link } from 'react-router-dom'
 
 const Dashboard = ({ user }) => (
-  <Card className="container">
-    <CardTitle
-      title="Dashboard"
-    />
-    {user && <CardText style={{ fontSize: '16px', color: 'green' }}>Welcome, {user.name}</CardText>}
+  <div className="container">
+    <h3>Dashboard</h3>
+    {user && <p style={{ fontSize: '16px', color: 'green' }}>Welcome, {user.name}</p>}
     <Link to='/allbooks'>
     	<RaisedButton primary={true} className='dash-btn'>
     		All Books
@@ -20,7 +17,7 @@ const Dashboard = ({ user }) => (
     		My Books
     	</RaisedButton>
     </Link>
-  </Card>
+  </div>
 )
 
 Dashboard.PropTypes = {
